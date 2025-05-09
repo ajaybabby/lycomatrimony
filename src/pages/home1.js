@@ -1,16 +1,89 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import RegistrationModal from '../components/RegistrationModal';
+import LoginModal from '../components/LoginModal';
 import './home1.css';
 
 const Home1 = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState('Myself');
+  const [selectedGender, setSelectedGender] = useState('Male');
+  const [currentStep, setCurrentStep] = useState(1);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState({ day: '', month: '', year: '' });
+  const [education, setEducation] = useState('');
+  const [company, setCompany] = useState('');
+  const [salary, setSalary] = useState('');
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
+  const navigate = useNavigate();
+  const handleFindMatches = () => {
+    if (isLoggedIn) {
+      navigate('/matches');
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('isLoggedIn');
+    setIsLoggedIn(false);
+    setUserData(null);
+    navigate('/');
+  };
+
+
+  
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const token = localStorage.getItem('userToken');
+      const userId = localStorage.getItem('userId');
+      
+      console.log('Checking login status:', { token, userId });
+      
+      if (token && userId) {
+        setIsLoggedIn(true);
+        console.log('User is logged in, fetching data...');
+        try {
+          const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const data = await response.json();
+          console.log('User data received:', data);
+          if (data.success) {
+            setUserData(data.data);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      } else {
+        console.log('No token or userId found, user not logged in');
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  // Add a new effect to monitor login state changes
+  useEffect(() => {
+    console.log('Login state changed:', isLoggedIn);
+  }, [isLoggedIn]);
+
   return (
     <div className="home-container">
-      {/* Header Section */}
       <header className="main-header">
         <nav>
           <div className="logo">
@@ -18,13 +91,26 @@ const Home1 = () => {
             <span className="tagline">Where Hearts Unite</span>
           </div>
           <div className="nav-links">
-            <a href="#home">Home</a>
-            <a href="#matches">Matches</a>
-            <a href="#search">Search</a>
-            <a href="#about">About</a>
+            <a href="/">Home</a>
+            <a href="/matches">Matches</a>
+            <a href="/search">Search</a>
+            <a href="/about">About</a>
             <div className="auth-buttons">
-              <button className="login-btn">Login</button>
-              <button className="register-btn">Register Free</button>
+              {isLoggedIn ? (
+                <div className="user-profile-menu">
+                  <span className="user-name">{userData?.first_name || 'User'}</span>
+                  <div className="dropdown-content">
+                    <a href="/profile">My Profile</a>
+                    <a href="/preferences">Preferences</a>
+                    <button onClick={handleLogout}>Logout</button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login</button>
+                  <button className="register-btn" onClick={handleFindMatches}>Register Free</button>
+                </>
+              )}
             </div>
           </div>
         </nav>
@@ -77,12 +163,11 @@ const Home1 = () => {
                   <option>Jain</option>
                 </select>
               </div>
-              <button className="search-now">Find Matches</button>
+              <button className="search-now" onClick={handleFindMatches}>Find Matches</button>
             </div>
           </div>
         </div>
-      </section>
-      <section className="hero">
+      </section><section className="hero">
         <section className="categories">
           <div className="category-cards">
             <div className="category-card">
@@ -218,6 +303,38 @@ const Home1 = () => {
           </div>
         </div>
       </footer>
+
+      {/* Registration Modal */}
+      {!isLoggedIn && (
+        <>
+          <LoginModal 
+            showLoginModal={showLoginModal}
+            setShowLoginModal={setShowLoginModal}
+          />
+      <RegistrationModal 
+        showModal={showModal}
+        setShowModal={setShowModal}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        selectedProfile={selectedProfile}
+        setSelectedProfile={setSelectedProfile}
+        selectedGender={selectedGender}
+        setSelectedGender={setSelectedGender}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        dateOfBirth={dateOfBirth}
+        setDateOfBirth={setDateOfBirth}
+        education={education}
+        setEducation={setEducation}
+        company={company}
+        setCompany={setCompany}
+        salary={salary}
+        setSalary={setSalary}
+      />
+        </>
+      )}
     </div>
   );
 };

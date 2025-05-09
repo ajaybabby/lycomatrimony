@@ -74,7 +74,6 @@ nav {
 
 /* Hero Section */
 .hero-section {
-    padding-top: 100px;
     min-height: 90vh;
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../../public/couple-image.jpg');
     background-size: cover;
@@ -96,16 +95,55 @@ nav {
     max-width: 1000px;
     margin: 3rem auto 0;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: transparent;
+    backdrop-filter: none;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transform: translateY(-50px);
 }
 
+/* Keep these related styles */
 .match-container h2 {
-    color: #333;
+    color: white;
     margin-bottom: 2rem;
     font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(246, 244, 244, 0.2);
+    text-align: center;
+}
+
+.filter-group label {
+    color: white;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+    text-shadow: 0 1px 2px rgba(243, 236, 236, 0.3);
+}
+
+.filter-group select {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group select option {
+    background: #333;
+    color: white;
+}
+
+.age-range span {
+    color: white;
+}
+
+.search-now {
+    background: rgba(231, 76, 60, 0.8);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.search-now:hover {
+    background: rgba(231, 76, 60, 0.9);
 }
 
 .match-filters {
@@ -116,7 +154,7 @@ nav {
 }
 
 .filter-group label {
-    color: #333;
+    color: #f0ebeb;
     font-weight: 500;
     margin-bottom: 0.5rem;
     display: block;
@@ -207,46 +245,6 @@ nav {
     background: #f8f9fa;
 }
 
-.match-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transform: translateY(-50px);
-}
-
-.match-container h2 {
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #333;
-}
-
-.match-filters {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-    align-items: end;
-}
-
-.filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.filter-group label {
-    font-weight: 500;
-    color: #666;
-}
-
-.filter-group select {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
-}
 
 .age-range {
     display: flex;
@@ -433,4 +431,236 @@ nav {
         flex-direction: column;
         text-align: center;
     }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    position: relative;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.modal-header h2 {
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.profile-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.option-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.option-btn {
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.option-btn.active {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+}
+
+.option-btn i {
+    font-size: 1.5rem;
+}
+
+.gender-section {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.gender-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.gender-btn {
+    padding: 0.8rem 2rem;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gender-btn.active {
+    background: #e74c3c;
+    color: white;
+    border-color: #e74c3c;
+}
+
+.lets-begin-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.lets-begin-btn:hover {
+    background: #d44235;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+    
+    .option-group {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background: white;
+}
+
+.form-select:focus {
+    border-color: #e74c3c;
+    outline: none;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.date-inputs {
+    display: flex;
+    gap: 1rem;
+}
+
+.date-inputs input {
+    width: 33%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+.form-input:focus,
+.date-inputs input:focus {
+    border-color: #e74c3c;
+    outline: none;
+}
+
+.user-profile-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-name {
+  padding: 8px 15px;
+  color: #333;
+  font-weight: 500;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  min-width: 180px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.user-profile-menu:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  text-align: left;
+  border: none;
+  background: none;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background: #f5f5f5;
 }
