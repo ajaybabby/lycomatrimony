@@ -13,8 +13,9 @@ const MatchesPage = () => {
     location: '',
   });
 
-  const [matches, setMatches] = useState([]); // Fixed useState declaration
+  const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sentInterests, setSentInterests] = useState(new Set());
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
@@ -44,6 +45,36 @@ const MatchesPage = () => {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendInterest = async (matchId) => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('userToken');
+
+    try {
+      const response = await fetch('http://localhost:5000/api/interests/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          senderId: userId,
+          receiverId: matchId
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        setSentInterests(prev => new Set([...prev, matchId]));
+        alert('Interest sent successfully!');
+      } else {
+        alert('Failed to send interest. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending interest:', error);
+      alert('Error sending interest. Please try again.');
     }
   };
 
@@ -172,8 +203,21 @@ const MatchesPage = () => {
                       alt={`${match.first_name} ${match.last_name}`} 
                     />
                     <div className="card-actions">
-                      <button className="interest-btn">Send Interest</button>
-                      <button className="reject-btn">Reject</button>
+                      {sentInterests.has(match.id) ? (
+                        <button className="interest-sent-btn" disabled>
+                          Interest Sent
+                        </button>
+                      ) : (
+                        <>
+                          <button 
+                            className="interest-btn" 
+                            onClick={() => handleSendInterest(match.id)}
+                          >
+                            Send Interest
+                          </button>
+                          <button className="reject-btn">Reject</button>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="match-info">

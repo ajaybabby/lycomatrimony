@@ -5,6 +5,8 @@ import ProfilePage from './pages/ProfilePage';
 
 import MatchesPage from './pages/MatchesPage';
 import AboutPage from './pages/AboutPage';
+import AstrologyMatch from './pages/AstrologyMatch';
+import Subscription from './pages/Subscription';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
           <Route path="/matches" element={<MatchesPage />} />
           // Add this route in your Routes component
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/astrologymatch" element={<AstrologyMatch/>}/>
+          <Route path="/subscription" element={<Subscription/>}/>
         </Routes>
       </div>
     </Router>
