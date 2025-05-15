@@ -1,7 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import './MatchesPage.css';
+import UserDetailModal from '../components/UserDetailModal';
+import SubscriptionPlans from '../components/SubscriptionPlans';
+import { useNavigate } from 'react-router-dom';
 
 const MatchesPage = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    const token = localStorage.getItem('userToken');
+    const userId = localStorage.getItem('userId');
+    
+    if (!token || !userId) {
+      navigate('/');
+      return;
+    }
+  }, [navigate]);
+
   const [filters, setFilters] = useState({
     ageRange: [18, 45],
     height: '',
@@ -16,68 +31,198 @@ const MatchesPage = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sentInterests, setSentInterests] = useState(new Set());
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [activeTab, setActiveTab] = useState('all');
+  const [showSubscription, setShowSubscription] = useState(false);
+  const [pendingInterestId, setPendingInterestId] = useState(null);
 
-  const calculateAge = (dateOfBirth) => {
-    const today = new Date();
-    const birthDate = new Date(dateOfBirth);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+  // Add the filteredMatches function
+  // Modify the filteredMatches function
+  const filteredMatches = () => {
+    let filtered = matches;
+
+    // First apply tab filters
+    switch(activeTab) {
+      case 'sent':
+        filtered = filtered.filter(match => match.interest_status === 'pending');
+        break;
+      case 'matched':
+        filtered = filtered.filter(match => match.interest_status === 'accepted');
+        break;
     }
-    return age;
-  };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('http://localhost:5000/api/2/matches');
-      const result = await response.json();
-      if (result.success) {
-        setMatches(result.data);
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSendInterest = async (matchId) => {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('userToken');
-
-    try {
-      const response = await fetch('http://localhost:5000/api/interests/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          senderId: userId,
-          receiverId: matchId
-        })
-      });
+    // Then apply search filters
+    filtered = filtered.filter(match => {
+      // Check each filter criteria
+      if (filters.religion && match.religion !== filters.religion) return false;
+      if (filters.education && match.education !== filters.education) return false;
+      if (filters.location && match.location !== filters.location) return false;
+      if (filters.income && match.income !== filters.income) return false;
       
-      const data = await response.json();
-      if (data.success) {
-        setSentInterests(prev => new Set([...prev, matchId]));
-        alert('Interest sent successfully!');
-      } else {
-        alert('Failed to send interest. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error sending interest:', error);
-      alert('Error sending interest. Please try again.');
-    }
+      return true;
+    });
+
+    return filtered;
   };
 
+  // Add handleApplyFilters function
+  const handleApplyFilters = () => {
+    // Force a re-render by updating a state
+    setMatches([...matches]);
+  };
+
+  // Update the apply filters button
+  // Find this in the JSX:
+
+const handleCardClick = (user) => {
+  setSelectedUser(user);
+};
+
+const calculateAge = (dateOfBirth) => {
+  const today = new Date();
+  const birthDate = new Date(dateOfBirth);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
+useEffect(() => {
+  fetchUsers();
+}, []);
+
+// Add new state for filter options
+const [filterOptions, setFilterOptions] = useState({
+  religions: new Set(),
+  educations: new Set(),
+  locations: new Set(),
+  incomes: new Set()
+});
+
+// Modify fetchUsers to extract filter options from matches
+const fetchUsers = async () => {
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('userToken');
+
+  try {
+    setLoading(true);
+    const response = await fetch(`http://localhost:5000/api/${userId}/matches`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    const result = await response.json();
+    if (result.success) {
+      setMatches(result.data);
+      
+      // Extract unique values for filters
+      const options = {
+        religions: new Set(result.data.map(match => match.religion).filter(Boolean)),
+        educations: new Set(result.data.map(match => match.education).filter(Boolean)),
+        locations: new Set(result.data.map(match => match.location).filter(Boolean)),
+        incomes: new Set(result.data.map(match => match.income).filter(Boolean))
+      };
+      
+      setFilterOptions(options);
+    }
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+    const handleSendInterest = async (matchId) => {
+      const hasSubscription = localStorage.getItem('subscription');
+      if (!hasSubscription) {
+        setShowSubscription(true);
+        setPendingInterestId(matchId);
+        return;
+      }
+  
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('userToken');
+  
+      try {
+        const response = await fetch('http://localhost:5000/api/interests/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            senderId: userId,
+            receiverId: matchId
+          })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          setSentInterests(prev => new Set([...prev, matchId]));
+          alert('Interest sent successfully!');
+        } else {
+          alert('Failed to send interest. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error sending interest:', error);
+        alert('Error sending interest. Please try again.');
+      }
+    };
+  
+    const handleSubscribe = async (planName) => {
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('userToken');
+  
+      try {
+        const response = await fetch('http://localhost:5000/api/subscriptions/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            planName: planName,
+            amount: getPlanAmount(planName)
+          })
+        });
+  
+        const data = await response.json();
+        if (data.success) {
+          localStorage.setItem('subscription', planName);
+          setShowSubscription(false);
+          
+          if (pendingInterestId) {
+            await handleSendInterest(pendingInterestId);
+            setPendingInterestId(null);
+          }
+        } else {
+          alert('Failed to subscribe. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error subscribing:', error);
+        alert('Error subscribing to plan. Please try again.');
+      }
+    };
+  
+    const getPlanAmount = (planName) => {
+      const planPrices = {
+        'Free': 0,
+        'Basic': 999,
+        'Standard': 1999,
+        'Advanced': 2999,
+        'Royal': 4999
+      };
+      return planPrices[planName] || 0;
+    };
+  
+    // ... before return statement ...
+
+  // Update the filters sidebar JSX
   return (
     <>
       {/* Header Section */}
@@ -137,33 +282,53 @@ const MatchesPage = () => {
   
           <div className="filter-section">
             <h3>Religion</h3>
-            <select>
+            <select
+              value={filters.religion}
+              onChange={(e) => setFilters({ ...filters, religion: e.target.value })}
+            >
               <option value="">All Religions</option>
-              <option value="hindu">Hindu</option>
-              <option value="muslim">Muslim</option>
-              <option value="christian">Christian</option>
-              <option value="sikh">Sikh</option>
+              {[...filterOptions.religions].map(religion => (
+                <option key={religion} value={religion}>{religion}</option>
+              ))}
             </select>
           </div>
   
           <div className="filter-section">
             <h3>Education</h3>
-            <select>
+            <select
+              value={filters.education}
+              onChange={(e) => setFilters({ ...filters, education: e.target.value })}
+            >
               <option value="">All Education</option>
-              <option value="bachelors">Bachelor's Degree</option>
-              <option value="masters">Master's Degree</option>
-              <option value="phd">Ph.D.</option>
+              {[...filterOptions.educations].map(education => (
+                <option key={education} value={education}>{education}</option>
+              ))}
+            </select>
+          </div>
+  
+          <div className="filter-section">
+            <h3>Location</h3>
+            <select
+              value={filters.location}
+              onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+            >
+              <option value="">Any Location</option>
+              {[...filterOptions.locations].map(location => (
+                <option key={location} value={location}>{location}</option>
+              ))}
             </select>
           </div>
   
           <div className="filter-section">
             <h3>Annual Income</h3>
-            <select>
+            <select
+              value={filters.income}
+              onChange={(e) => setFilters({ ...filters, income: e.target.value })}
+            >
               <option value="">Any Income</option>
-              <option value="0-5">0-5 LPA</option>
-              <option value="5-10">5-10 LPA</option>
-              <option value="10-15">10-15 LPA</option>
-              <option value="15+">15+ LPA</option>
+              {[...filterOptions.incomes].map(income => (
+                <option key={income} value={income}>{income}</option>
+              ))}
             </select>
           </div>
   
@@ -178,7 +343,30 @@ const MatchesPage = () => {
         {/* Matches Content */}
         <div className="matches-content">
           <div className="matches-header">
-            <h1>Matches</h1>
+            <div className="matches-tabs">
+              <button 
+                className={`tab-btn ${activeTab === 'all' ? 'active' : ''}`}
+                onClick={() => setActiveTab('all')}
+              >
+                All Matches <span className="count">{matches.length}</span>
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'sent' ? 'active' : ''}`}
+                onClick={() => setActiveTab('sent')}
+              >
+                Requests Sent <span className="count">
+                  {matches.filter(m => m.interest_status === 'pending').length}
+                </span>
+              </button>
+              <button 
+                className={`tab-btn ${activeTab === 'matched' ? 'active' : ''}`}
+                onClick={() => setActiveTab('matched')}
+              >
+                Matched <span className="count">
+                  {matches.filter(m => m.interest_status === 'accepted').length}
+                </span>
+              </button>
+            </div>
             <div className="matches-actions">
               <select className="sort-by">
                 <option value="relevance">Relevance</option>
@@ -195,15 +383,17 @@ const MatchesPage = () => {
             <div className="loading-spinner">Loading...</div>
           ) : (
             <div className="matches-grid">
-              {matches.map(match => (
-                <div key={match.id} className="match-card">
+              {filteredMatches().map(match => (
+                <div key={match.id} className="match-card" onClick={() => handleCardClick(match)}>
                   <div className="match-photo">
                     <img 
                       src={`https://placekitten.com/400/${400 + match.id}`} 
                       alt={`${match.first_name} ${match.last_name}`} 
                     />
                     <div className="card-actions">
-                      {sentInterests.has(match.id) ? (
+                      {match.interest_status === 'pending' ? (
+                        <span className="interest-status-pending">Interest Sent</span>
+                      ) : sentInterests.has(match.id) ? (
                         <button className="interest-sent-btn" disabled>
                           Interest Sent
                         </button>
@@ -211,11 +401,19 @@ const MatchesPage = () => {
                         <>
                           <button 
                             className="interest-btn" 
-                            onClick={() => handleSendInterest(match.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSendInterest(match.id);
+                            }}
                           >
                             Send Interest
                           </button>
-                          <button className="reject-btn">Reject</button>
+                          <button 
+                            className="reject-btn" 
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Reject
+                          </button>
                         </>
                       )}
                     </div>
@@ -246,8 +444,20 @@ const MatchesPage = () => {
           )}
         </div>
       </div>
+      {selectedUser && (
+        <UserDetailModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+      )}
+      {showSubscription && (
+        <SubscriptionPlans 
+          onClose={() => setShowSubscription(false)}
+          onSubscribe={handleSubscribe}
+        />
+      )}
     </>
   );
 };
 
 export default MatchesPage;
+
+
+ 

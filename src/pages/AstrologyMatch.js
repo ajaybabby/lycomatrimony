@@ -60,6 +60,41 @@ const AstrologyMatch = () => {
     });
   };
 
+  // Add handleSearchMatches here, before the return statement
+  const handleSearchMatches = async () => {
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('userToken');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/astrology/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          userId: userId,
+          preferences: {
+            zodiacSign: filters.zodiacSign,
+            nakshatra: filters.nakshatra,
+            rashi: filters.rashi,
+            manglik: filters.manglik
+          }
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setMatches(data.matches);
+      } else {
+        alert('Failed to fetch matches. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error searching matches:', error);
+      alert('Error occurred while searching. Please try again.');
+    }
+  };
+
   return (
     <div className="astrology-container">
       <header className="main-header">
@@ -151,7 +186,7 @@ const AstrologyMatch = () => {
               </div>
             </div>
 
-            <button className="search-matches" onClick={() => console.log('Search with filters:', filters)}>
+            <button className="search-matches" onClick={handleSearchMatches}>
               Find Matches
             </button>
           </div>

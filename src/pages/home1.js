@@ -93,6 +93,7 @@ const Home1 = () => {
           <div className="nav-links">
             <a href="/">Home</a>
             <a href="/matches">Matches</a>
+            <a href="/dashboard">Dashboard</a>
             <a href="/astrologymatch">AstrologyMatch</a>
             <a href="/search">Search</a>
             <a href="/about">About</a>

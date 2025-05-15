@@ -7,6 +7,7 @@ import MatchesPage from './pages/MatchesPage';
 import AboutPage from './pages/AboutPage';
 import AstrologyMatch from './pages/AstrologyMatch';
 import Subscription from './pages/Subscription';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/astrologymatch" element={<AstrologyMatch/>}/>
           <Route path="/subscription" element={<Subscription/>}/>
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
       </div>
     </Router>
