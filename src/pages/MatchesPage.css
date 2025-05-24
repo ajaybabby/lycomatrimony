@@ -254,3 +254,23 @@
 .apply-filters:hover {
   background: #0056b3;
 }
+
+.interest-sent-btn {
+  background: linear-gradient(to right, #4caf50, #45a049);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  opacity: 0.8;
+  cursor: not-allowed;
+  transition: opacity 0.3s ease;
+}
+
+.interest-status-pending {
+  background: linear-gradient(to right, #4caf50, #45a049);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  opacity: 0.8;
+  display: inline-block;
+}

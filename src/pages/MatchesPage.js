@@ -138,7 +138,7 @@ const fetchUsers = async () => {
 
     const handleSendInterest = async (matchId) => {
       const hasSubscription = localStorage.getItem('subscription');
-      if (!hasSubscription) {
+      if (hasSubscription) {
         setShowSubscription(true);
         setPendingInterestId(matchId);
         return;

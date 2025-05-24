@@ -34,8 +34,17 @@ const Home1 = () => {
   };
 
   const handleLogout = () => {
+    // Log localStorage items before removal
+    console.log('localStorage items before logout:', {
+      token: localStorage.getItem('userToken'),
+      userId: localStorage.getItem('userId'),
+      subscription: localStorage.getItem('subscription'),
+      isLoggedIn: localStorage.getItem('isLoggedIn')
+    });
+
     localStorage.removeItem('userToken');
     localStorage.removeItem('userId');
+    localStorage.removeItem('subscription');
     localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false);
     setUserData(null);

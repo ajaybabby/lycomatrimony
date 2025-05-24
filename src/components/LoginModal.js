@@ -20,14 +20,23 @@ const LoginModal = ({ showLoginModal, setShowLoginModal }) => {
         body: JSON.stringify(isOtpLogin ? { email, otp } : { email, password }),
       });
       const data = await response.json();
+      
+      // Add debugger statement here
+      
       console.log('Login response:', data);
+      console.log('Login data details:', {
+        token: data.data.userToken,
+        userId: data.data.userId,
+        subscription: data.data.subscription
+      });
       
       if (data.success && data.data.userToken) {
         localStorage.setItem('userToken', data.data.userToken);
         localStorage.setItem('userId', data.data.userId);
+        localStorage.setItem('subscription', data.data.subscription);
         localStorage.setItem('isLoggedIn', 'true');
         setShowLoginModal(false);
-        window.location.reload(); // Force a refresh to update the login state
+        window.location.reload();
       }
     } catch (error) {
       console.error('Login error:', error);
