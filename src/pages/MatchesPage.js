@@ -38,16 +38,19 @@ const MatchesPage = () => {
 
   // Add the filteredMatches function
   // Modify the filteredMatches function
+  // Add 'received' case to filteredMatches function
   const filteredMatches = () => {
     let filtered = matches;
 
-    // First apply tab filters
     switch(activeTab) {
       case 'sent':
         filtered = filtered.filter(match => match.interest_status === 'pending');
         break;
       case 'matched':
         filtered = filtered.filter(match => match.interest_status === 'accepted');
+        break;
+      case 'received':
+        filtered = filtered.filter(match => match.interest_status === 'received');
         break;
     }
 
@@ -219,7 +222,64 @@ const fetchUsers = async () => {
       };
       return planPrices[planName] || 0;
     };
-  
+
+    // Add these new handler functions
+    const handleAcceptInterest = async (matchId) => {
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('userToken');
+
+      try {
+        const response = await fetch('http://localhost:5000/api/interests/accept', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            interestId: matchId
+          })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          fetchUsers(); // Refresh the matches list
+          alert('Interest accepted successfully!');
+        }
+      } catch (error) {
+        console.error('Error accepting interest:', error);
+        alert('Error accepting interest. Please try again.');
+      }
+    };
+
+    const handleDeclineInterest = async (matchId) => {
+      const userId = localStorage.getItem('userId');
+      const token = localStorage.getItem('userToken');
+
+      try {
+        const response = await fetch('http://localhost:5000/api/interests/decline', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            interestId: matchId
+          })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          fetchUsers(); // Refresh the matches list
+          alert('Interest declined successfully!');
+        }
+      } catch (error) {
+        console.error('Error declining interest:', error);
+        alert('Error declining interest. Please try again.');
+      }
+    };
+
     // ... before return statement ...
 
   // Update the filters sidebar JSX
@@ -359,6 +419,14 @@ const fetchUsers = async () => {
                 </span>
               </button>
               <button 
+                className={`tab-btn ${activeTab === 'received' ? 'active' : ''}`}
+                onClick={() => setActiveTab('received')}
+              >
+                Requests Received <span className="count">
+                  {matches.filter(m => m.interest_status === 'received').length}
+                </span>
+              </button>
+              <button 
                 className={`tab-btn ${activeTab === 'matched' ? 'active' : ''}`}
                 onClick={() => setActiveTab('matched')}
               >
@@ -393,6 +461,27 @@ const fetchUsers = async () => {
                     <div className="card-actions">
                       {match.interest_status === 'pending' ? (
                         <span className="interest-status-pending">Interest Sent</span>
+                      ) : match.interest_status === 'received' ? (
+                        <div className="received-actions">
+                          <button 
+                            className="accept-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAcceptInterest(match.id);
+                            }}
+                          >
+                            Accept
+                          </button>
+                          <button 
+                            className="decline-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeclineInterest(match.id);
+                            }}
+                          >
+                            Decline
+                          </button>
+                        </div>
                       ) : sentInterests.has(match.id) ? (
                         <button className="interest-sent-btn" disabled>
                           Interest Sent
