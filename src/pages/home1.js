@@ -24,6 +24,9 @@ const Home1 = () => {
     setIsVisible(true);
   }, []);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+
   const navigate = useNavigate();
   const handleFindMatches = () => {
     if (isLoggedIn) {
@@ -90,42 +93,57 @@ const Home1 = () => {
   useEffect(() => {
     console.log('Login state changed:', isLoggedIn);
   }, [isLoggedIn]);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 50);
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
 
   return (
     <div className="home-container">
-      <header className="main-header">
-        <nav>
-          <div className="logo">
-            <h1>Perfect Match</h1>
-            <span className="tagline">Where Hearts Unite</span>
-          </div>
-          <div className="nav-links">
-            <a href="/">Home</a>
-            <a href="/matches">Matches</a>
-            <a href="/dashboard">Dashboard</a>
-            <a href="/astrologymatch">AstrologyMatch</a>
-            <a href="/search">Search</a>
-            <a href="/about">About</a>
-            <div className="auth-buttons">
-              {isLoggedIn ? (
-                <div className="user-profile-menu">
-                  <span className="user-name">{userData?.first_name || 'User'}</span>
-                  <div className="dropdown-content">
-                    <a href="/profile">My Profile</a>
-                    <a href="/preferences">Preferences</a>
-                    <button onClick={handleLogout}>Logout</button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login</button>
-                  <button className="register-btn" onClick={handleFindMatches}>Register Free</button>
-                </>
-              )}
+    <header className={`main-header ${isScrolled ? 'scrolled' : ''}`}>
+  <nav>
+    <div className="logo">
+      <h1>Perfect Match</h1>
+      <span className="tagline">Where Hearts Unite</span>
+    </div>
+    <div className="nav-links">
+      {isLoggedIn && (
+        <>
+          <a href="/">Home</a>
+          <a href="/matches">Matches</a>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/astrologymatch">AstrologyMatch</a>
+          <a href="/search">Search</a>
+          <a href="/about">About</a>
+        </>
+      )}
+      <div className="auth-buttons">
+        {isLoggedIn ? (
+          <div className="user-profile-menu">
+            <span className="user-name">{userData?.first_name || 'User'}</span>
+            <div className="dropdown-content">
+              <a href="/profile">My Profile</a>
+              <a href="/preferences">Preferences</a>
+              <button onClick={handleLogout}>Logout</button>
             </div>
           </div>
-        </nav>
-      </header>
+        ) : (
+          <>
+            <button className="login-btn" onClick={() => setShowLoginModal(true)}>Login</button>
+            <button className="register-btn" onClick={handleFindMatches}>Register Free</button>
+          </>
+        )}
+      </div>
+    </div>
+  </nav>
+</header>
 
       {/* Hero Section */}
       <section className="hero-section">
@@ -133,11 +151,12 @@ const Home1 = () => {
           <h1 className={`fade-in ${isVisible ? 'visible' : ''}`}>
             Find Your Perfect Life Partner
           </h1>
-          <p className="subtitle">Join millions of happy couples who found their soulmate</p>
+          <br></br>
           
           {/* Move Quick Match section here */}
           <div className="match-container">
             <h2>Quick Match</h2>
+            <p className="subtitle">Join millions of happy couples who found their soulmate</p>
             <div className="match-filters">
               <div className="filter-group">
                 <label>I'm looking for a</label>
@@ -177,6 +196,8 @@ const Home1 = () => {
               <button className="search-now" onClick={handleFindMatches}>Find Matches</button>
             </div>
           </div>
+          
+          
         </div>
       </section><section className="hero">
         <section className="categories">

@@ -24,7 +24,7 @@
 .logo h1 {
   margin: 0;
   color: #e74c3c;
-  font-size: 24px;
+  font-size: 35px;
 }
 
 .logo .tagline {
@@ -74,62 +74,66 @@
   grid-template-columns: 280px 1fr;
   gap: 24px;
   padding: 20px;
-  background: #f8f9fa;
-}
-
-.filters-sidebar {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  height: fit-content;
+  background: #fff5f7;
 }
 
 .matches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+  padding: 15px;
 }
 
 .match-card {
   background: white;
-  border-radius: 12px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(255, 182, 193, 0.2);
+  transition: all 0.4s ease;
+  border: 1px solid #ffe4e9;
 }
 
 .match-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(255, 138, 155, 0.3);
 }
 
 .match-photo {
   position: relative;
-  height: 200px;
+  height: 300px;
+  overflow: hidden;
 }
 
 .match-photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.match-card:hover .match-photo img {
+  transform: scale(1.08);
 }
 
 .match-info {
-  padding: 15px;
+  padding: 20px;
+  background: linear-gradient(to bottom, #fff, #fff5f8);
+  position: relative;
 }
 
 .match-info h3 {
-  font-size: 16px;
-  margin: 0 0 8px;
-  color: #2c3e50;
+  font-size: 1.4rem;
+  color: #ff4d6d;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
 .match-basic, .match-details, .match-religion, .match-additional {
-  font-size: 13px;
   color: #666;
-  margin: 4px 0;
+  font-size: 0.95rem;
+  margin: 8px 0;
+  padding: 8px 0;
+  border-bottom: 1px dashed #ffd1dc;
 }
 
 .card-actions {
@@ -137,37 +141,56 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 10px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  padding: 15px;
+  background: linear-gradient(to top, rgba(255, 77, 109, 0.9), transparent);
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+}
+
+.match-card:hover .card-actions {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .interest-btn, .reject-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 10px 20px;
+  border-radius: 25px;
   border: none;
-  font-size: 13px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .interest-btn {
-  background: #4CAF50;
+  background: linear-gradient(45deg, #ff4d6d, #ff8fa3);
   color: white;
+  flex: 2;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
 }
 
 .interest-btn:hover {
-  background: #43A047;
+  background: linear-gradient(45deg, #ff8fa3, #ff4d6d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 77, 109, 0.4);
 }
 
 .reject-btn {
-  background: #ef5350;
+  background: rgba(255, 255, 255, 0.25);
   color: white;
+  backdrop-filter: blur(5px);
+  flex: 1;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .reject-btn:hover {
-  background: #e53935;
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
 }
 
 .matches-tabs {
@@ -256,21 +279,39 @@
 }
 
 .interest-sent-btn {
-  background: linear-gradient(to right, #4caf50, #45a049);
+  background: linear-gradient(45deg, #ff8fa3, #ff4d6d);
   color: white;
   border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  opacity: 0.8;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
   cursor: not-allowed;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+  width: 100%;
+  text-align: center;
+}
+
+.interest-sent-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 6px 20px rgba(255, 77, 109, 0.3);
 }
 
 .interest-status-pending {
-  background: linear-gradient(to right, #4caf50, #45a049);
+  background: linear-gradient(45deg, #ff8fa3, #ff4d6d);
   color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  opacity: 0.8;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  text-align: center;
+  width: 100%;
+  opacity: 0.85;
+  box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   display: inline-block;
 }
