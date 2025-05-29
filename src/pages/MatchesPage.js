@@ -78,6 +78,7 @@ const MatchesPage = () => {
   // Find this in the JSX:
 
 const handleCardClick = (user) => {
+  // Pass the complete user object to the modal
   setSelectedUser(user);
 };
 
@@ -534,7 +535,21 @@ const fetchUsers = async () => {
         </div>
       </div>
       {selectedUser && (
-        <UserDetailModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+        <UserDetailModal 
+          user={selectedUser} 
+          onClose={() => setSelectedUser(null)}
+          onAccept={() => {
+            if (selectedUser.interest_status === 'received') {
+              handleAcceptInterest(selectedUser.id);
+            }
+          }}
+          onDecline={() => {
+            if (selectedUser.interest_status === 'received') {
+              handleDeclineInterest(selectedUser.id);
+            }
+          }}
+          onSendInterest={() => handleSendInterest(selectedUser.id)}
+        />
       )}
       {showSubscription && (
         <SubscriptionPlans 

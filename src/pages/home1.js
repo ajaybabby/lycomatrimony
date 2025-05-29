@@ -151,12 +151,15 @@ const Home1 = () => {
           <h1 className={`fade-in ${isVisible ? 'visible' : ''}`}>
             Find Your Perfect Life Partner
           </h1>
-          <br></br>
+          {/* Add the subtitle */}
+          <p className="subtitle1 fade-in" style={{ animationDelay: '0.5s' }}>
+            Your journey to finding love starts here.
+          </p>
           
           {/* Move Quick Match section here */}
           <div className="match-container">
             <h2>Quick Match</h2>
-            <p className="subtitle">Join millions of happy couples who found their soulmate</p>
+            <p className="subtitle1">Join millions of happy couples who found their soulmate</p>
             <div className="match-filters">
               <div className="filter-group">
                 <label>I'm looking for a</label>
@@ -203,42 +206,54 @@ const Home1 = () => {
         <section className="categories">
           <div className="category-cards">
             <div className="category-card">
-              <div className="card-front">
-                <i className="fas fa-star"></i>
-                <h3>Astrology</h3>
-              </div>
-              <div className="card-back">
-                <p>Find your perfect match based on zodiac compatibility and astronomical alignments. Expert astrologers guide your journey.</p>
-              </div>
-            </div>
-
-            <div className="category-card">
-              <div className="card-front">
-                <i className="fas fa-users"></i>
-                <h3>Community</h3>
-              </div>
-              <div className="card-back">
-                <p>Connect with people from your community. Search by caste, sub-caste, and cultural preferences.</p>
+              {/* Wrap card content in card-inner for flip effect */}
+              <div className="card-inner">
+                <div className="card-front">
+                  <i className="fas fa-star"></i>
+                  <h3>Astrology</h3>
+                </div>
+                <div className="card-back">
+                  <p>Find your perfect match based on zodiac compatibility and astronomical alignments. Expert astrologers guide your journey.</p>
+                </div>
               </div>
             </div>
 
             <div className="category-card">
-              <div className="card-front">
-                <i className="fas fa-pray"></i>
-                <h3>Religion</h3>
-              </div>
-              <div className="card-back">
-                <p>Find matches within your religious beliefs. Filter by religious practices and traditions.</p>
+              {/* Wrap card content in card-inner for flip effect */}
+              <div className="card-inner">
+                <div className="card-front">
+                  <i className="fas fa-users"></i>
+                  <h3>Community</h3>
+                </div>
+                <div className="card-back">
+                  <p>Connect with people from your community. Search by caste, sub-caste, and cultural preferences.</p>
+                </div>
               </div>
             </div>
 
             <div className="category-card">
-              <div className="card-front">
-                <i className="fas fa-moon"></i>
-                <h3>Horoscope Match</h3>
+              {/* Wrap card content in card-inner for flip effect */}
+              <div className="card-inner">
+                <div className="card-front">
+                  <i className="fas fa-pray"></i>
+                  <h3>Religion</h3>
+                </div>
+                <div className="card-back">
+                  <p>Find matches within your religious beliefs. Filter by religious practices and traditions.</p>
+                </div>
               </div>
-              <div className="card-back">
-                <p>Detailed horoscope matching with Kundli analysis and Guna Milan calculations.</p>
+            </div>
+
+            <div className="category-card">
+              {/* Wrap card content in card-inner for flip effect */}
+              <div className="card-inner">
+                <div className="card-front">
+                  <i className="fas fa-moon"></i>
+                  <h3>Horoscope Match</h3>
+                </div>
+                <div className="card-back">
+                  <p>Detailed horoscope matching with Kundli analysis and Guna Milan calculations.</p>
+                </div>
               </div>
             </div>
           </div>
