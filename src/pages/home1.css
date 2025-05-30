@@ -638,7 +638,7 @@ a:hover {
 .app-image {
     width: 300px; /* Fixed width for image placeholder */
     height: 350px; /* Fixed height */
-    background: url('../../public/favicon.ico') no-repeat center center; /* Placeholder image */
+    background: url('../../public/home1.jpg') no-repeat center center; /* Placeholder image */
     background-size: contain;
     /* Add animation if you have a specific image */
 }

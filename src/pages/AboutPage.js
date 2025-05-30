@@ -50,7 +50,12 @@ const AboutPage = () => {
   const handlePreferencesUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/2/preferences', {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        throw new Error('User ID not found in localStorage');
+      }
+
+      const response = await fetch(`http://localhost:5000/api/${userId}/preferences`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

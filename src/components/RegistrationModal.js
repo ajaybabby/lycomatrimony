@@ -1,4 +1,5 @@
 import React from 'react';
+import './registrationmodal.css';
 
 const RegistrationModal = ({ 
   showModal, 
@@ -22,6 +23,9 @@ const RegistrationModal = ({
   salary,
   setSalary
 }) => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
   const handleSubmitProfile = async () => {
     try {
       const formData = {
@@ -32,10 +36,12 @@ const RegistrationModal = ({
         dateOfBirth: `${dateOfBirth.year}-${dateOfBirth.month}-${dateOfBirth.day}`,
         education,
         company,
-        salary
+        salary,
+        email,
+        password
       };
 
-      const response = await fetch('http://your-api-endpoint/profile', {
+      const response = await fetch('http://localhost:5000/api/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -56,6 +62,8 @@ const RegistrationModal = ({
         setEducation('');
         setCompany('');
         setSalary('');
+        setEmail('');
+        setPassword('');
       } else {
         throw new Error('Failed to create profile');
       }
@@ -234,7 +242,9 @@ const RegistrationModal = ({
                   />
                 </div>
               </div>
-              <button className="lets-begin-btn" onClick={() => setCurrentStep(4)}>Continue</button>
+              <button className="lets-begin-btn" onClick={() => setCurrentStep(5)}>
+                Continue
+              </button>
             </div>
           </>
         )}
@@ -287,6 +297,41 @@ const RegistrationModal = ({
                 </select>
               </div>
               <button className="lets-begin-btn" onClick={handleSubmitProfile}>Submit Profile</button>
+            </div>
+          </>
+        )}
+        
+        {currentStep === 5 && (
+          <>
+            <div className="modal-header">
+              <h2>Create Your Account</h2>
+            </div>
+            <div className="profile-options">
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a password"
+                  required
+                />
+              </div>
+              <button className="lets-begin-btn" onClick={handleSubmitProfile}>
+                Complete Registration
+              </button>
             </div>
           </>
         )}
