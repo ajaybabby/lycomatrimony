@@ -179,7 +179,7 @@ const DashboardPage = () => {
                 <img src={profilePhotos[0]} alt="Main profile" />
               ) : (
                 <div className="photo-placeholder">
-                  <i className="fas fa-user"></i>
+                  <i className="fas fa-user-circle"></i>
                 </div>
               )}
             </div>
@@ -198,55 +198,67 @@ const DashboardPage = () => {
             </div>
             {isEditing && (
               <label className="upload-btn">
-                <input type="file" multiple onChange={handlePhotoUpload} accept="image/*" />
-                Upload Photos
+                <input 
+                  type="file" 
+                  multiple 
+                  onChange={handlePhotoUpload} 
+                  accept="image/*"
+                  max="3"
+                />
+                <i className="fas fa-camera"></i> Upload Photos
               </label>
             )}
           </div>
 
           <div className="profile-summary">
             <h2>{userData?.first_name || ''} {userData?.last_name || ''}</h2>
-            <input
-              type="text"
-              name="last_name"
-              value={userData?.last_name || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-            />
             
-            
-            <input
-              type="text"
-              name="father_name"
-              value={userData?.father_name || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-            />
-            
-            <input
-              type="text"
-              name="mother_name"
-              value={userData?.mother_name || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-            />
-            
-            <input
-              type="number"
-              name="min_age"
-              value={userData?.min_age || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              placeholder="Min"
-            />
-            
-            <input
-              type="email"
-              name="email"
-              value={userData?.email || ''}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-            />
+            <div className="profile-header-fields">
+              <div className="form-group">
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={userData?.last_name || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Father's Name</label>
+                <input
+                  type="text"
+                  name="father_name"
+                  value={userData?.father_name || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Mother's Name</label>
+                <input
+                  type="text"
+                  name="mother_name"
+                  value={userData?.mother_name || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={userData?.email || ''}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                />
+              </div>
+            </div>
+
             <p className="profile-id">ID: {userData?.profile_id || ''}</p>
             <div className="profile-actions">
               {isEditing ? (
